@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
 }
 
 datasource db {
@@ -11,17 +12,17 @@ datasource db {
 }
 
 model User {
-   id String @id @default(auto()) @map("_id") @db.ObjectId
-   name String
-   image String?
-   email String?
-   emailVerified String?
-   hashedPassword String?
-   createAt DateTime @default(now())
-   updateAt DateTime @updatedAt
-   sessions Session[]
-   accounts Account[]
-   favoriteIds String[] @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  image String?
+  email String? @unique
+  emailVerified DateTime?
+  hashedPassword String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions Session[]
+  accounts Account[]
+  favoriteIds String[] @db.ObjectId
 }
 
 model Account {
@@ -51,4 +52,21 @@ model Session {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
+  @@unique([identifier, token])
+}
+
+model Movie {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  description String
+  videoUrl String
+  thumbnailUrl String
+  genre String
+  duration String
+}
